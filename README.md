@@ -1,5 +1,14 @@
 # 📚 AI Knowledge Base Sync using n8n
 
+[![n8n](https://img.shields.io/badge/Built%20With-n8n-EA4B71?logo=n8n&logoColor=white)](https://n8n.io/)
+[![OpenRouter](https://img.shields.io/badge/AI-OpenRouter-blue)](https://openrouter.ai/)
+[![Notion](https://img.shields.io/badge/Database-Notion-black?logo=notion)](https://notion.so/)
+[![Google Drive](https://img.shields.io/badge/Storage-Google%20Drive-4285F4?logo=googledrive&logoColor=white)](https://drive.google.com/)
+[![Telegram](https://img.shields.io/badge/Notification-Telegram-26A5E4?logo=telegram)](https://telegram.org/)
+[![JavaScript](https://img.shields.io/badge/Language-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![License](https://img.shields.io/github/license/belioautomation/AI-Knowledge-Base-Sync-using-n8n)](LICENSE)
+
+
 Automatically organize, summarize, and sync PDF documents into a searchable Notion knowledge base using AI.
 
 ---
