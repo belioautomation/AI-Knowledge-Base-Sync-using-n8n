@@ -1,0 +1,135 @@
+# Meeting Notes
+
+## Project Information
+
+**Project:** AI Knowledge Base Sync using n8n
+
+**Date:** July 19, 2026
+
+**Time:** 2:00 PM – 3:00 PM
+
+**Location:** Virtual Meeting
+
+**Facilitator:** Belio C. Sinangote
+
+---
+
+# Attendees
+
+- Belio C. Sinangote
+- Project Team
+
+---
+
+# Agenda
+
+- Review project progress
+- Demonstrate AI Knowledge Base Sync workflow
+- Discuss AI document analysis
+- Review Notion integration
+- Identify current issues and blockers
+- Define action items
+
+---
+
+# Discussion Notes
+
+The team reviewed the AI Knowledge Base Sync workflow developed using n8n.
+
+A demonstration showed how the workflow automatically detects newly uploaded PDF documents from Google Drive, extracts their contents, and uses AI to analyze the text.
+
+The AI successfully generated a document title, concise summary, category, tags, and keywords before synchronizing the information into a structured Notion Knowledge Base.
+
+The workflow also sent Telegram notifications after each successful document synchronization.
+
+Testing confirmed that the workflow can automate document organization and significantly reduce manual documentation efforts.
+
+---
+
+# Workflow Status
+
+| Component | Status |
+|-----------|--------|
+| Google Drive Trigger | ✅ Completed |
+| Download File | ✅ Completed |
+| Extract PDF Text | ✅ Completed |
+| AI Agent | ✅ Completed |
+| Structured Output Parser | ✅ Completed |
+| JavaScript Processing | ✅ Completed |
+| Notion Integration | ✅ Completed |
+| Telegram Notification | ✅ Completed |
+
+---
+
+# AI Integration Updates
+
+- Successfully connected OpenRouter AI.
+- Structured JSON output is generated for every processed document.
+- AI extracts:
+  - Title
+  - Summary
+  - Category
+  - Tags
+  - Keywords
+
+---
+
+# Issues & Blockers
+
+- Initial Structured Output Parser configuration required adjustments.
+- Notion database permissions had to be updated before synchronization.
+- Duplicate detection is planned for a future version.
+
+---
+
+# Decisions Made
+
+- Continue using Notion as the centralized knowledge base.
+- Store AI-generated metadata for every uploaded document.
+- Expand the workflow with semantic search capabilities in future releases.
+
+---
+
+# Action Items
+
+| Task | Owner | Due Date |
+|------|-------|----------|
+| Improve prompt engineering | Belio | July 22, 2026 |
+| Implement duplicate detection | Belio | July 25, 2026 |
+| Add OCR support for scanned PDFs | Belio | July 28, 2026 |
+| Publish workflow on GitHub | Belio | July 20, 2026 |
+
+---
+
+# Next Meeting
+
+**Date:** July 26, 2026
+
+**Time:** 2:00 PM
+
+**Location:** Virtual
+
+---
+
+# Expected AI Output
+
+```json
+{
+  "title": "Meeting Notes",
+  "summary": "Discussion of the AI Knowledge Base Sync project covering workflow progress, AI integration, document synchronization, issues, and action items.",
+  "category": "Meeting",
+  "tags": [
+    "n8n",
+    "AI Knowledge Base",
+    "Workflow",
+    "Automation",
+    "Notion"
+  ],
+  "keywords": [
+    "AI Knowledge Base Sync",
+    "Meeting Notes",
+    "Project Management",
+    "Document Processing"
+  ]
+}
+```
