@@ -1,0 +1,325 @@
+{
+  "name": "AI Knowledge Base Sync using n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1k0dZR9Ug9DTtrPsVdu2RZFgQZUwRlb6t",
+          "mode": "list",
+          "cachedResultName": "Knowledge Base",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1k0dZR9Ug9DTtrPsVdu2RZFgQZUwRlb6t"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "93dd7bf7-8874-46ff-9e19-544ef660d009",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "hBlxLeCCJROTFMgu",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "0620e3cd-203a-4084-8872-5b37c8ce75d5",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "hBlxLeCCJROTFMgu",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "ad2c7f4f-de5b-4b54-81a5-4e9c33366b8b",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the document and return valid JSON only.\n\n{\n  \"title\": \"\",\n  \"summary\": \"\",\n  \"category\": \"\",\n  \"tags\": [],\n  \"keywords\": []\n}\n\nDocument:\n\n{{$json.text}}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an AI Knowledge Management Assistant.\n\nAnalyze the provided document.\n\nExtract the following information:\n\n- title\n- summary\n- category\n- tags\n- keywords\n\nRules:\n\n- Summary must be under 100 words.\n- Category must be a single word.\n- Return only the required structured output.\n- Do not include markdown.\n- Do not explain your answer."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        672,
+        0
+      ],
+      "id": "7cf18e2f-f3c2-4550-80f3-ea54167b2bc2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "cohere/north-mini-code:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        688,
+        224
+      ],
+      "id": "3d374380-06a3-4ed2-a7fa-365da5b427a4",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "QDj45Ha7qs7vErnq",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\"title\":\"string\",\n\"summary\":\"string\",\n\"category\":\"string\",\n\"tags\":[\n\"string\"\n],\n\"keywords\":[\n\"string\"\n]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        816,
+        224
+      ],
+      "id": "c9f6620a-2405-4515-855b-3b14c796817d",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.output;\n\nreturn [\n  {\n    json: {\n      title: data.title,\n      summary: data.summary,\n      category: data.category,\n      tags: data.tags,\n      keywords: data.keywords,\n      searchTitle: data.title.toLowerCase()\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        0
+      ],
+      "id": "3e59a2fc-cb80-42eb-9e8b-a8b160b92565",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "37527cde-8475-8050-bf7f-f6861d90d8ed",
+          "mode": "list",
+          "cachedResultName": "AI Knowledge Base",
+          "cachedResultUrl": "https://app.notion.com/p/37527cde84758050bf7ff6861d90d8ed"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Title|title",
+              "title": "={{ $json.title }}"
+            },
+            {
+              "key": "Summary|rich_text",
+              "textContent": "={{ $json.summary }}"
+            },
+            {
+              "key": "Category|select",
+              "selectValue": "={{ $json.category }}"
+            },
+            {
+              "key": "Tags|multi_select",
+              "multiSelectValue": "={{ $json.tags }}"
+            },
+            {
+              "key": "Keywords|multi_select",
+              "multiSelectValue": "={{ $json.keywords }}"
+            },
+            {
+              "key": "Processed At|date",
+              "date": "={{ $now }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "93b21e47-0844-4cfb-89d9-d33a64ed75e2",
+      "name": "Create a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "KllxZQvv7p8h5ViO",
+          "name": "n8n AI Knowledge Base"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5518864435",
+        "text": "=📚 New Knowledge Base Entry Created\n\n📄 Title:\n{{ $json.property_title }}\n\n🗂️ Category:\n{{$json.property_category}}\n\n📝 Summary:\n{{$json.property_summary}}\n\n🏷️ Tags:\n{{ $json.property_tags }}\n\n🔑 Keywords:\n{{ $json.property_keywords }}\n\n🕒 Processed At:\n{{$now}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1472,
+        0
+      ],
+      "id": "64192c3e-1fb8-407e-aede-8f3baabc9943",
+      "name": "Notify Message",
+      "webhookId": "84713b39-d012-40b6-b023-270bd2af0e02",
+      "credentials": {
+        "telegramApi": {
+          "id": "2m2ZAnossYlxodgQ",
+          "name": "AI Knowledge Base Sync using n8n"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a database page": {
+      "main": [
+        [
+          {
+            "node": "Notify Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "84e0fab1-273c-4eec-b605-f5e100dc1553",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "nodeGroups": [],
+  "id": "LpfCuTRapnJVDGVR",
+  "tags": []
+}
